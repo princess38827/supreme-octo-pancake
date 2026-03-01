@@ -1,0 +1,121 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from scipy.spatial.transform import Rotation
+
+# Define the golden ratio
+phi = (1 + np.sqrt(5)) / 2
+
+# Vertices of the regular icosahedron
+V = np.array([
+    [-1, phi, 0],
+    [1, phi, 0],
+    [-1, -phi, 0],
+    [1, -phi, 0],
+    [0, -1, phi],
+    [0, 1, phi],
+    [0, -1, -phi],
+    [0, 1, -phi],
+    [phi, 0, -1],
+    [phi, 0, 1],
+    [-phi, 0, -1],
+    [-phi, 0, 1]
+])
+
+# Normalize vertices to lie on a unit sphere
+V = V / np.linalg.norm(V, axis=1)[:, np.newaxis]
+
+# Faces of the icosahedron (20 triangular faces)
+F = np.array([
+    [0, 11, 5],
+    [0, 5, 1],
+    [0, 1, 7],
+    [0, 7, 10],
+    [0, 10, 11],
+    [1, 5, 9],
+    [5, 11, 4],
+    [11, 10, 2],
+    [10, 7, 6],
+    [7, 1, 8],
+    [3, 9, 4],
+    [3, 4, 2],
+    [3, 2, 6],
+    [3, 6, 8],
+    [3, 8, 9],
+    [4, 9, 5],
+    [2, 4, 11],
+    [6, 2, 10],
+    [8, 6, 7],
+    [9, 8, 1]
+])
+
+# Compute face centers
+centers = np.array([np.mean(V[face], axis=0) for face in F])
+
+# Find opposite faces
+opposites = {}
+for i in range(20):
+    if i in opposites:
+        continue
+    neg_center = -centers[i]
+    for j in range(i + 1, 20):
+        if np.allclose(neg_center, centers[j], atol=1e-6):
+            opposites[i] = j
+            opposites[j] = i
+            break
+
+# Assign numbers such that opposites sum to 21
+numbers = {}
+k = 1
+for i in sorted(opposites.keys()):
+    if i in numbers:
+        continue
+    j = opposites[i]
+    numbers[i] = k
+    numbers[j] = 21 - k
+    k += 1
+
+# Simulate a roll by applying a random rotation
+rot = Rotation.random()
+rotated_V = rot.apply(V)
+rotated_centers = rot.apply(centers)
+
+# Determine the "up" face (highest z-coordinate)
+up_face_idx = np.argmax(rotated_centers[:, 2])
+roll_result = numbers[up_face_idx]
+
+print(f"Roll result: {roll_result}")
+
+# Plot the 3D die
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection='3d')
+ax.set_box_aspect([1, 1, 1])  # Equal aspect ratio
+
+# Draw faces
+for idx, face in enumerate(F):
+    verts = rotated_V[face]
+    poly = Poly3DCollection([verts], alpha=0.8, edgecolor='gray', linewidth=0.5)
+    poly.set_facecolor('lightblue')
+    ax.add_collection3d(poly)
+
+# Add labels to faces
+for idx in range(20):
+    center = rotated_centers[idx]
+    # Position label slightly outward
+    label_pos = center * 1.05
+    ax.text(label_pos[0], label_pos[1], label_pos[2], str(numbers[idx]),
+            color='black', fontsize=8, ha='center', va='center')
+
+# Set limits and remove axes for better visualization
+max_range = 1.2
+ax.set_xlim(-max_range, max_range)
+ax.set_ylim(-max_range, max_range)
+ax.set_zlim(-max_range, max_range)
+ax.axis('off')
+
+# Initial view angle
+ax.view_init(elev=20, azim=30)
+
+plt.title("3D Manipulatable d20 Die (Rotate with mouse)")
+plt.show()
