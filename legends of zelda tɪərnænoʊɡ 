@@ -1,0 +1,342 @@
+6:03
+
+40%
+
+<
+
+Echoes of Tír na nÓg: A Skyward Fr...
+
+# Echoes of Tír na nóg: A Skyward Fragment - Mini-Game Documentation
+
+##1. Introduction
+
+This document provides the Python script and instructions for deploying "Echoes of Tír na nóg: A Skyward Fragment," a text-based nano mini-game designed for the Shapes.inc chat platform. Inspired by *The Legend of Zelda: Tears of the Kingdom* and the mythological land of *Tír na nóg*, this game offers a simplified adventure where players navigate fragmented sky islands, collect artifacts, and restore balance to a shattered world through text-based commands.
+
+## 2. Game Concept and Mechanics
+
+### 2.1. Core Concept
+
+Players embark on a micro-adventure to retrieve lost fragments of a sky island, utilizing simple text-based choices and a hint of resource management to navigate a fragmented world.
+
+### 2.2. Story/Setting
+
+The world is a shattered realm, reminiscent of Hyrule after the Upheaval, but infused with the ethereal beauty of Tír na nóg. Sky islands, once connected, now drift apart. The player is a lone adventurer, a descendant of ancient heroes, tasked by a mysterious oracle (the chat bot itself) to reassemble a crucial artifact the **Heart of Aethel** scattered across these floating landmasses. Each fragment holds a piece of ancient knowledge and power.
+
+### 2.3. Gameplay Mechanics (Simplified for Chat)
+
+***Exploration**: Players are presented with text-based choices for movement (e.g., "Go North," "Ascend to a higher island," "Descend to the ruins below"). Each choice leads to a new descriptive text and potential encounters.
+
+***Resource Management: "Aether Wisps"**: Instead of traditional health or stamina, players manage **Aether Wisps**. These wisps are consumed for special actions (e.g., using a "Sky-Glide" to reach distant islands, activating ancient mechanisms). Wisps can be found through exploration or by solving simple puzzles.
+
+<
+6:03
+
+40%
+
+<
+
+Echoes of Tír na nÓg: A Skyward Fr...
+
+* **"Ultrahand" Inspired Interaction: Text-Based Crafting**:
+
+Players find simple components (e.g., "Ancient Gear," "Gleaming Crystal," "Sturdy Vine"). The game prompts players to combine these using text commands (e.g., "Combine Ancient Gear and Sturdy Vine"). Successful combinations might create tools (e.g., a "Makeshift Grappling Hook") or unlock new paths.
+
+***Simple Puzzles/Challenges**: These are text-based riddles
+
+or environmental descriptions requiring logical deduction to proceed.
+
+***Combat (Abstracted)**: Encounters with shadowy
+
+creatures are resolved through choice (e.g., "Fight," "Flee," "Use Makeshift Grappling Hook to escape"). Outcomes are determined by player choices and available resources.
+
+### 2.4. Objectives
+
+Collect 3 fragments of the Heart of Aethel.
+
+Overcome challenges and puzzles.
+
+Ultimately, reassemble the Heart to stabilize the sky islands.
+
+### 2.5. Embedded Movie Aspect
+
+Upon completing a major objective (e.g., collecting a fragment, reassembling the Heart), the script generates a short, descriptive narrative sequence, providing a sense of cinematic progression within the text-based game.
+
+## 3. Python Game Script
+
+python
+
+import json
+
+import random
+
+class GameState:
+
+def __init__(self):
+
+self.location = "Sky Island Hub"
+
+self.inventory = []
+
+self.aether_wisps = 5
+
+self.fragments_collected = 0
+
+self.game_over = False
+
+self.story_log = [[
+
+def to_json(self):
+
+return json.dumps(self._dict_
+
+<
+6:03
+
+40%
+
+<
+
+Echoes of Tír na nÓg: A Skyward Fr...
+
+@classmethod
+
+def from_json(cls, json_str):
+
+state = cls()
+
+state._dict__.update(json.loads(json_str))
+
+return state
+
+def get_location_description(location):
+
+descriptions = {
+
+"Sky Island Hub": "You stand upon a central floating island, surrounded by drifting fragments of land. To the North, a shimmering forest; to the East, ancient ruins; to the West, a cascading waterfall of light.",
+
+"Shimmering Forest": "The trees here glow with a soft, ethereal light. You feel a sense of peace, but also a hidden danger. A fragment of the Heart of Aethel might be hidden within the dense foliage.",
+
+"Ancient Ruins": "Crumbling stone structures whisper of a forgotten era. You see a pedestal with a strange indentation. Perhaps a fragment is nearby?",
+
+"Waterfall of Light": "A magnificent waterfall of pure energy cascades into the void. The air is thick with Aether Wisps. A fragment might be hidden behind the veil of light."
+
+}
+
+return descriptions.get(location, "You are in an unknown location.")
+
+def handle_input(state, player_input):
+
+player_input = player_input.lower()
+
+if "go north" in player_input:
+
+state.location = "Shimmering Forest"
+
+state.story_log.append("You traveled North to the Shimmering Forest.")
+
+elif "go east" in player_input:
+
+state.location = "Ancient Ruins"
+
+state.story_log.append("You traveled East to the Ancient Ruins.")
+
+elif "go west" in player_input:
+
+state.location = "Waterfall of Light"
+
+state.story_log.append("You traveled West to the Waterfall of Light.")
+
+elif "search" in plaver_input:
+
+<
+6:03
+
+40%
+
+<
+
+Echoes of Tír na nÓg: A Skyward Fr...
+
+elif "search" in player_input:
+
+if state.location == "Shimmering Forest" and "Forest
+
+Fragment" not in state.inventory:
+
+state.inventory.append("Forest Fragment")
+
+state.fragments_collected += 1
+
+state.story_log.append("You found a Forest Fragment!")
+
+elif state.location == "Ancient Ruins" and "Ruins Fragment" not in state.inventory:
+
+state.inventory.append("Ruins Fragment")
+
+state.fragments_collected += 1
+
+state.story_log.append("You found a Ruins Fragment!")
+
+elif state.location == "Waterfall of Light" and "Waterfall
+
+Fragment" not in state.inventory:
+
+state.inventory.append("Waterfall Fragment")
+
+state.fragments_collected += 1
+
+state.story_log.append("You found a Waterfall
+
+Fragment!")
+
+else:
+
+new.") state.story_log.append("You searched but found nothing
+
+elif "status" in player_input:
+
+state.story_log.append(f"Status: Location: {state.location), Inventory: {", ".join(state.inventory)}, Aether Wisps: (state.aether_wisps), Fragments: (state.fragments_collected}/3")
+
+else:
+
+state.story_log.append("I don't understand that command. Try 'go north', 'go east', 'go west', 'search', or 'status'.")
+
+if state.fragments_collected == 3:
+
+state.game_over = True
+
+state.story_log.append("Congratulations! You have
+
+collected all three fragments and reassembled the Heart of Aethel. The sky islands are stabilized!")
+
+return state
+
+def main():
+
+state_file = "game_state.json"
+
+try:
+
+with open(state_file, "r") as f:
+
+state = GameState.from_json(f.read())
+
+<
+
+101
+6:03
+
+40%
+
+<
+
+Echoes of Tír na nÓg: A Skyward Fr...
+
+state = GameState.from_json(f.read())
+
+except (FileNotFoundError, json.JSONDecodeError):
+
+state = GameState()
+
+state.story_log.append("Welcome to 'Echoes of Tír na nóg: A Skyward Fragment'!")
+
+import sys
+
+player_input = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "status"
+
+state = handle_input(state, player_input)
+
+if state.game_over:
+
+print(" CINEMATIC SEQUENCE: THE HEART REASSEMBLED ")
+
+print("The three fragments hum in unison, their light intensifying until it blinds you.")
+
+print("A wave of pure Aether energy ripples outward, stitching the sky islands back together.")
+
+print("The land of Tír na nóg is restored, and you are its savior.")
+
+print(" THE END")
+
+else:
+
+print("\n".join(state.story_log[-2:]))
+
+print(f"\n {state.location}")
+
+print(get_location_description(state.location))
+
+print("\nAvailable Commands: 'go north', 'go east', 'go west', 'search', 'status")
+
+with open(state_file, "w") as f:
+
+f.write(state.to_json())
+
+if __name__ == "__main__":
+
+main()
+
+## 4. Usage Instructions for Shapes.inc Chat
+
+To run "Echoes of Tír na nÓg: A Skyward Fragment" in your Shapes.inc chat:
+
+1. **Enable "Run Code" Skill**: Ensure that the "Run Code" skill
+
+<
+6:04
+
+40%
+
+<
+
+Echoes of Tír na nÓg: A Skyward Fr...
+
+Shapes.inc chat:
+
+1. **Enable "Run Code" Skill**: Ensure that the "Run Code" skill is enabled for your Shape. This can typically be found in the "Al Configurations" tab within your chat settings on Shapes.inc.
+
+2. **Upload the Script**: You will need to provide the Python
+
+script (the code above) to your Shape. The exact method for this depends on how Shapes.inc handles script uploads or direct code input for the "Run Code" skill. It might involve pasting the code directly into a configuration field or uploading apy file.
+
+3. **Start the Game**: In the chat, you can initiate the game by asking your Shape to "Run the game script" or a similar natural language command that triggers the "Run Code" skill with the echoes_of_tir_na_nog.py' script.
+
+4. **Player Commands**: Once the game starts, players can interact by typing commands such as:
+
+`go north
+
+go east
+
+`go west
+
+'search'
+
+* `status
+
+5. **Game State**: The game state (player's location, inventory, etc.) is saved between turns in a `game_state.json' file. This allows the game to continue from where it left off in subsequent interactions.
+
+6. **Cinematic Sequences**: Upon collecting all three
+
+fragments, a special "cinematic sequence" will be displayed in the chat, marking the completion of the game.
+
+## 5. Customization and Expansion
+
+This script provides a basic framework. You can expand it by:
+
+* Adding more locations and unique descriptions.
+
+Introducing more complex puzzles and crafting recipes.
+
+Implementing a simple combat system with dice rolls (if the Shapes.inc environment allows for random number generation).
+
+Integrating with other Shapes.inc skills, such as image generation, to create visual elements for locations or cinematic moments.
+
+Copy
+
+Share
+
+Select all
+
+Ask Claude
+
+Ask dopilot:
